@@ -26,11 +26,23 @@ sub expand_params {
 
 sub dynamic_call {
     my ( $caller, $name, %options ) = @_;
+    my $beforesend = $options{beforesend};
+    my $postreceive = $options{postreceive};
+
     Class::MOP::Class->initialize($caller)->add_method(
         $name,
         sub {
             my $self = shift; 
-            return $self->_connector->send_request( $self->_prefix . '.' . $name , expand_params( $self, shift ));
+            my $params = shift;
+            $params = expand_params( $self, $params );
+            if( $beforesend ){ 
+                $params = $beforesend->( $self, $self->_sys, $params );
+            }
+            my $result = $self->_connector->send_request( $self->_prefix . '.' . $name , $params );
+            if( $postreceive ){ 
+                $result = $postreceive->( $self, $self->_sys, $result ); 
+            }
+            return $result;
 #            Carp::carp( "Called $name " . Data::Dumper::Dumper( \@_ ) );
         }
     );
