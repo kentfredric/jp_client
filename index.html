@@ -1,1 +1,85 @@
-Todo
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>lib/JPClient.pm</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:Gentoo@ember.fox.geek.nz" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">Name</a></li>
+	<li><a href="#description">Description</a></li>
+	<li><a href="#synopsis">Synopsis</a></li>
+	<li><a href="#methods">Methods</a></li>
+	<li><a href="#author">Author</a></li>
+	<li><a href="#copyright">Copyright</a></li>
+	<li><a href="#license">License</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<h1><a name="name">Name</a></h1>
+<p>JPClient</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">Description</a></h1>
+<p>An RPC Client for JobPractical</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">Synopsis</a></h1>
+<pre>
+    use JPClient;
+    my $jc = JPClient-&gt;new( apikey =&gt; 'key' );
+    $jc-&gt;account-&gt;login({
+        email =&gt; foo@bar.org,
+        @morestuff,
+        persist_login =&gt; 1,
+    });
+    $jc-&gt;info-&gt;whatever;
+    $jc-&gt;account-&gt;logout();</pre>
+<p>
+</p>
+<hr />
+<h1><a name="methods">Methods</a></h1>
+<dl>
+<dt><strong><a name="account" class="item">-&gt;account   <a href="/JPClient/Account.html">the JPClient::Account manpage</a></a></strong>
+
+<dt><strong><a name="info" class="item">-&gt;info      <a href="/JPClient/Info.html">the JPClient::Info manpage</a></a></strong>
+
+<dt><strong><a name="recruiter" class="item">-&gt;recruiter <a href="/JPClient/Recruiter.html">the JPClient::Recruiter manpage</a></a></strong>
+
+<dt><strong><a name="candidate" class="item">-&gt;candidate <a href="/JPClient/Candidate.html">the JPClient::Candidate manpage</a></a></strong>
+
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="author">Author</a></h1>
+<p>Kent Fredric</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">Copyright</a></h1>
+<p>
+</p>
+<hr />
+<h1><a name="license">License</a></h1>
+
+</body>
+
+</html>
