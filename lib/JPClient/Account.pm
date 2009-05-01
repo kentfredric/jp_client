@@ -22,3 +22,23 @@ freeze;
 
 1;
 
+
+__END__
+
+=head1 Name
+
+JPClient::Account
+
+=head1 Synopsis
+
+See L<JPClient>
+
+=head1 Methods
+
+=over 4
+
+=item ->login
+
+=item ->logout
+
+=back

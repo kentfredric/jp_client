@@ -107,6 +107,14 @@ An RPC Client for JobPractical
 
 =item ->account   L<JPClient::Account>
 
+=over 8
+
+=item ->account->login L<JPClient::Account/login>
+
+=item ->account->logout L<JPClient::Account/logout>
+
+=back
+
 =item ->info      L<JPClient::Info>
 
 =item ->recruiter L<JPClient::Recruiter>

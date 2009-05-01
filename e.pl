@@ -20,5 +20,9 @@ print Dumper $x->account->login(
         persist_login => 1,
     }
 )->value;
+print "#-------------------------------\n";
+print Dumper $x->info->list_industries();
 print "#--------------------------------\n";
 print Dumper $x->account->logout()->value;
+
+
