@@ -8,8 +8,10 @@ use lib "$FindBin::Bin/lib";
 use JPClient;
 
 my $x = JPClient->new( 
-    apikey => '7' x 52,
+    apikey => '7' x 56,
 );
 
-print Dumper $x->account()->login();
+print Dumper $x->account()->login(
+ {    params => {}        }
+);
 

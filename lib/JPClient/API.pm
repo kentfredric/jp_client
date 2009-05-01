@@ -14,13 +14,23 @@ Moose::Exporter->setup_import_methods(
     also        => 'Moose',
 );
 
+sub expand_params {
+    my $package = shift; 
+    my $params = shift;
+    if ( $package->_sys->has_session_key ){ 
+        $params->{session} = $package->_sys->session_key;
+    }
+    $params->{apikey} = $package->_sys->apikey;
+    return $params;
+}
+
 sub dynamic_call {
     my ( $caller, $name, %options ) = @_;
     Class::MOP::Class->initialize($caller)->add_method(
         $name,
         sub {
             my $self = shift; 
-            return $self->_connector->send_request( $self->_prefix . '.' . $name , \@_ );
+            return $self->_connector->send_request( $self->_prefix . '.' . $name , expand_params( $self, shift ));
 #            Carp::carp( "Called $name " . Data::Dumper::Dumper( \@_ ) );
         }
     );
@@ -52,6 +62,7 @@ sub child_namespace {
                 _parent => $self ,
                 _prefix => $self->_prefix . '.'. $name, 
                 _connector => $self->_connector , 
+                _sys => $self->_sys
             );
         }
     );
@@ -78,6 +89,13 @@ sub has_parent {
             is => 'rw', 
             isa => 'Str', 
             required => '1', 
+    );
+    Class::MOP::Class->initialize($caller)->add_attribute( 
+            '_sys', 
+            is => 'rw', 
+            isa => 'Object', 
+            required => '1', 
+            weak_ref => 1,
     );
 
 }

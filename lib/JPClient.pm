@@ -50,6 +50,17 @@ has _connector => (
     lazy_build => 1, 
 );
 
+has session_key => ( 
+    isa => 'Str', 
+    is => 'rw',
+    predicate => 'has_session_key',
+);
+
+has _sys => ( 
+        isa => 'Object', 
+        is => 'rw', 
+        lazy_build => 1,
+    );
 
 child_namespace 'account';
 child_namespace 'info';
@@ -61,6 +72,10 @@ sub _build__connector {
     return RPC::XML::Client->new( 
         sprintf('http://%s:%s/%s', $self->hostname, $self->port, $self->path )
     );
+}
+
+sub _build__sys {
+    return shift;
 }
 
 freeze();
