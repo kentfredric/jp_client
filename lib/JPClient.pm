@@ -79,3 +79,50 @@ sub _build__sys {
 freeze();
 1;
 
+__END__
+
+=head1 Name
+
+JPClient
+
+=head1 Description
+
+An RPC Client for JobPractical
+
+=head1 Synopsis
+
+    use JPClient;
+    my $jc = JPClient->new( apikey => 'key' );
+    $jc->account->login({
+        email => foo@bar.org,
+        @morestuff,
+        persist_login => 1,
+    });
+    $jc->info->whatever;
+    $jc->account->logout();
+
+=head1 Methods
+
+=over 4
+
+=item ->account   L<JPClient::Account>
+
+=item ->info      L<JPClient::Info>
+
+=item ->recruiter L<JPClient::Recruiter>
+
+=item ->candidate L<JPClient::Candidate>
+
+=back
+
+=head1 Author
+
+Kent Fredric
+
+=head1 Copyright
+
+=head1 License
+
+=cut
+
+1;

@@ -5,7 +5,7 @@ package JPClient::Account;
 use JPClient::API;
 
 has_parent;
-dynamic_call 'login' => (
+dynamic_call login => (
     params      => [qw( email password type persist_login )],
     postreceive => sub {
         my ( $self, $sys, $result ) = @_;
@@ -16,7 +16,7 @@ dynamic_call 'login' => (
         return $result;
     }
 );
-dynamic_call 'logout';
+dynamic_call logout =>;
 
 freeze;
 
