@@ -19,6 +19,6 @@ print Dumper $x->account->login(
         type          => 'recruiter',
         persist_login => 1,
     }
-);
+)->value;
 print "#--------------------------------\n";
-print Dumper $x->account->logout();
+print Dumper $x->account->logout()->value;
