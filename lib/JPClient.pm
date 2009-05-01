@@ -3,9 +3,7 @@ package JPClient;
 # $Id:$
 
 use JPClient::API;
-use RPC::XML::Client;
-
-use namespace::clean -except => [qw( has meta dynamic_call freeze child_namespace )];
+use RPC::XML::Client ();
 
 has hostname => (
     isa     => 'Str',
@@ -25,9 +23,9 @@ has apikey => (
     is       => 'rw',
 );
 
-has path => ( 
-    isa => 'Str',
-    is  => 'rw',
+has path => (
+    isa     => 'Str',
+    is      => 'rw',
     default => 'api/xmlrpc/',
 );
 
@@ -38,29 +36,29 @@ has persistent => (
 );
 
 has _prefix => (
-    isa => 'Str', 
-    is => 'rw',
-    required => 0, 
-    default => '', 
+    isa      => 'Str',
+    is       => 'rw',
+    required => 0,
+    default  => '',
 );
 
 has _connector => (
-    isa => 'RPC::XML::Client', 
-    is  => 'rw', 
-    lazy_build => 1, 
+    isa        => 'RPC::XML::Client',
+    is         => 'rw',
+    lazy_build => 1,
 );
 
-has session_key => ( 
-    isa => 'Str', 
-    is => 'rw',
+has session_key => (
+    isa       => 'Str',
+    is        => 'rw',
     predicate => 'has_session_key',
 );
 
-has _sys => ( 
-        isa => 'Object', 
-        is => 'rw', 
-        lazy_build => 1,
-    );
+has _sys => (
+    isa        => __PACKAGE__,
+    is         => 'rw',
+    lazy_build => 1,
+);
 
 child_namespace 'account';
 child_namespace 'info';
@@ -69,8 +67,8 @@ child_namespace 'candidate';
 
 sub _build__connector {
     my $self = shift;
-    return RPC::XML::Client->new( 
-        sprintf('http://%s:%s/%s', $self->hostname, $self->port, $self->path )
+    return RPC::XML::Client->new(
+        sprintf( 'http://%s:%s/%s', $self->hostname, $self->port, $self->path )
     );
 }
 
