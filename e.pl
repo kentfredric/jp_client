@@ -14,10 +14,10 @@ my $x = JPClient->new( apikey => '7' x 56, );
 print "#-------------------------------\n";
 print Dumper $x->account->login(
     {
-        email    => 'valid@site.com',
-        password => 'hello',
-        type     => 'recruiter',    
-        persist  => 1,
+        email         => 'valid@site.com',
+        password      => 'hello',
+        type          => 'recruiter',
+        persist_login => 1,
     }
 );
 print "#--------------------------------\n";

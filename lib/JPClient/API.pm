@@ -10,8 +10,14 @@ use Moose::Exporter ();
 use namespace::clean;
 
 Moose::Exporter->setup_import_methods(
-    with_caller =>
-      [ 'dynamic_call', 'freeze', 'child_namespace', 'has_parent' ],
+    with_caller => [
+        qw[
+          dynamic_call
+          freeze
+          child_namespace
+          has_parent
+          ]
+    ],
     also => 'Moose',
 );
 
@@ -26,6 +32,23 @@ sub expand_params {
     }
     $params->{apikey} = $package->_sys->apikey;
     return $params;
+}
+
+sub check_params {
+    my $name      = shift;
+    my $params    = shift;
+    my $permitted = shift;
+    my %valid     = (
+        apikey  => 1,
+        session => 1,
+        map { $_ => 1 } @$permitted
+    );
+    for ( keys %$params ) {
+        if ( !exists $valid{$_} ) {
+            Carp::carp( "Warning, $_ appears not to be"
+                  . " a recognised parameter to $name" );
+        }
+    }
 }
 
 #
@@ -48,7 +71,7 @@ sub dynamic_call {
 
     my $beforesend  = $options{beforesend};
     my $postreceive = $options{postreceive};
-
+    my $extraparams = $options{params} || [];
     Class::MOP::Class->initialize($caller)->add_method(
         $name,
         sub {
@@ -58,6 +81,7 @@ sub dynamic_call {
             if ($beforesend) {
                 $params = $beforesend->( $self, $self->_sys, $params );
             }
+            check_params( $name, $params, $extraparams );
             my $result =
               $self->_connector->send_request( $self->_prefix . '.' . $name,
                 $params );
