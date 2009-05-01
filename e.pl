@@ -22,6 +22,8 @@ print Dumper $x->account->login(
 )->value;
 print "#-------------------------------\n";
 print Dumper $x->info->list_industries();
+print "#-------------------------------\n";
+print Dumper $x->candidate->register();
 print "#--------------------------------\n";
 print Dumper $x->account->logout()->value;
 
