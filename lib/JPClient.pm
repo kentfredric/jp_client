@@ -17,22 +17,40 @@ has port => (
     default => 3000,
 );
 
-has apikey => (
-    isa      => 'Str',
-    required => 1,
-    is       => 'rw',
+has defaultparams => (
+    isa     => 'ArrayRef[Str]',
+    is      => 'rw',
+    default => sub {
+        return [];
+    },
+);
+
+has beforesend => (
+    isa     => 'CodeRef',
+    is      => 'ro',
+    default => sub {
+        sub {
+            my ( $self, $sys, $params ) = @_;
+            return $params;
+          }
+    }
+);
+
+has postreceive => (
+    isa     => 'CodeRef',
+    is      => 'ro',
+    default => sub {
+        sub {
+            my ( $self, $sys, $result ) = @_;
+            return $result;
+          }
+    }
 );
 
 has path => (
     isa     => 'Str',
     is      => 'rw',
     default => 'api/xmlrpc/',
-);
-
-has persistent => (
-    isa      => 'Bool',
-    required => 0,
-    default  => 1,
 );
 
 has _prefix => (
@@ -48,18 +66,13 @@ has _connector => (
     lazy_build => 1,
 );
 
-has session_key => (
-    isa       => 'Str',
-    is        => 'rw',
-    predicate => 'has_session_key',
-);
-
 has _sys => (
     isa        => __PACKAGE__,
     is         => 'rw',
     lazy_build => 1,
 );
 
+dynamic_call 'test';
 child_namespace 'account';
 child_namespace 'info';
 child_namespace 'recruiter';

@@ -21,28 +21,11 @@ Moose::Exporter->setup_import_methods(
     also => 'Moose',
 );
 
-#
-# Applies Generic copies for all calls.
-#
-sub expand_params {
-    my $package = shift;
-    my $params  = shift;
-    if ( $package->_sys->has_session_key ) {
-        $params->{session} = $package->_sys->session_key;
-    }
-    $params->{apikey} = $package->_sys->apikey;
-    return $params;
-}
-
 sub check_params {
     my $name      = shift;
     my $params    = shift;
     my $permitted = shift;
-    my %valid     = (
-        apikey  => 1,
-        session => 1,
-        map { $_ => 1 } @$permitted
-    );
+    my %valid     = ( map { $_ => 1 } @$permitted );
     for ( keys %$params ) {
         if ( !exists $valid{$_} ) {
             Carp::carp( "Warning, $_ appears not to be"
@@ -66,28 +49,54 @@ sub check_params {
 #    }
 # );
 #
+# Hook Call Order.
+#
+# call
+# expand_params
+#   system->beforesend
+#     method->beforesend
+#      req
+#     system->postreceive
+#  method->postreceive
+# response
+#
+#
 sub dynamic_call {
     my ( $caller, $name, %options ) = @_;
 
-    my $beforesend  = $options{beforesend};
-    my $postreceive = $options{postreceive};
-    my $extraparams = $options{params} || [];
+    my $beforesend  = $options{beforesend}  // sub { return $_[2] };
+    my $postreceive = $options{postreceive} // sub { return $_[2] };
+    my $extraparams = $options{params}      // [];
     Class::MOP::Class->initialize($caller)->add_method(
         $name,
         sub {
             my $self   = shift;
-            my $params = shift;
-            $params = expand_params( $self, $params );
-            if ($beforesend) {
-                $params = $beforesend->( $self, $self->_sys, $params );
+            my $params = {};
+            if ( scalar @_ ) {
+                if ( ref $_[0] eq 'HASH' ) {
+                    $params = $_[0];
+                }
+                elsif ( ( scalar @_ % 2 ) == 0 ) {
+                    $params = {@_};
+                }
             }
-            check_params( $name, $params, $extraparams );
+            my $params = shift // {};
+            my @syc = ( $self, $self->_sys );
+
+            $params = $self->_sys->beforesend->( @syc, $params );
+
+            $params = $beforesend->( @syc, $params );
+
+            check_params( $name, $params,
+                [ @{ $self->_sys->defaultparams }, @{$extraparams} ] );
+
             my $result =
               $self->_connector->send_request( $self->_prefix . '.' . $name,
                 $params );
-            if ($postreceive) {
-                $result = $postreceive->( $self, $self->_sys, $result );
-            }
+
+            $result = $self->_sys->postreceive->( @syc, $result );
+            $result = $postreceive->( @syc, $result );
+
             return $result;
 
        #            Carp::carp( "Called $name " . Data::Dumper::Dumper( \@_ ) );
