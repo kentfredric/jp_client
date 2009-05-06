@@ -6,7 +6,7 @@ use JPClient::API;
 
 has_parent;
 
-dynamic_call 'register';
+dynamic_call 'register' => ( params => [qw( email password name )], );
 dynamic_call 'change_password';
 
 child_namespace 'agency';

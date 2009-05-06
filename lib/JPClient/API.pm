@@ -75,12 +75,12 @@ sub dynamic_call {
             if ( scalar @_ ) {
                 if ( ref $_[0] eq 'HASH' ) {
                     $params = $_[0];
+                    shift;
                 }
                 elsif ( ( scalar @_ % 2 ) == 0 ) {
                     $params = {@_};
                 }
             }
-            my $params = shift // {};
             my @syc = ( $self, $self->_sys );
 
             $params = $self->_sys->beforesend->( @syc, $params );
