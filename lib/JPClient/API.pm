@@ -34,6 +34,17 @@ sub check_params {
     }
 }
 
+sub check_has_params {
+    my $name     = shift;
+    my $params   = shift;
+    my $required = shift;
+    for ( @{$required} ) {
+        if ( !exists $params->{$_} ) {
+            Carp::croak("A required parameter $_ was missing to $name ");
+        }
+    }
+}
+
 #
 # Generates API Calls.
 # Pretend it works like jQuery AJAX in a way.
@@ -66,6 +77,7 @@ sub dynamic_call {
 
     my $beforesend  = $options{beforesend}  // sub { return $_[2] };
     my $postreceive = $options{postreceive} // sub { return $_[2] };
+    my $needparams  = $options{needparams}  // [];
     my $extraparams = $options{params}      // [];
     Class::MOP::Class->initialize($caller)->add_method(
         $name,
@@ -87,8 +99,14 @@ sub dynamic_call {
 
             $params = $beforesend->( @syc, $params );
 
-            check_params( $name, $params,
-                [ @{ $self->_sys->defaultparams }, @{$extraparams} ] );
+            check_has_params( $name, $params, @{$needparams} );
+            check_params(
+                $name, $params,
+                [
+                    @{ $self->_sys->defaultparams }, @{$extraparams},
+                    @{$needparams}
+                ]
+            );
 
             my $result =
               $self->_connector->send_request( $self->_prefix . '.' . $name,
